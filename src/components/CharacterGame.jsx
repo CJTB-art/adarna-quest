@@ -64,6 +64,7 @@ export default function CharacterGame({ game }) {
 
   function choose(name) {
     if (status !== 'idle') return
+    sound.playClick()
     setSelected(name)
     if (name === current.name) {
       setStatus('correct')
@@ -106,7 +107,7 @@ export default function CharacterGame({ game }) {
           dangerouslySetInnerHTML={{ __html: `"${current.clue}"` }} />
       </motion.div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-2">
         {options.map((opt) => {
           const Art = CHARACTER_ART[opt.name]
           const isCorrect  = opt.name === current.name
@@ -123,7 +124,7 @@ export default function CharacterGame({ game }) {
               disabled={status !== 'idle'}
               whileHover={status === 'idle' ? { y: -4, scale: 1.03 } : {}}
               whileTap={status === 'idle'   ? { scale: 0.96 } : {}}
-              className={`rounded-3xl border-2 p-0 h-[270px] sm:h-[330px] overflow-hidden
+              className={`rounded-3xl border-2 p-0 h-[230px] sm:h-[270px] overflow-hidden
                 transition-all duration-200 font-body ${borderCls} ${bgCls}`}>
               <div className="relative h-full w-full">
                 <CharacterPortrait
@@ -134,7 +135,7 @@ export default function CharacterGame({ game }) {
                   className="w-full h-full rounded-[22px]"
                 />
                 <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/65 to-transparent pointer-events-none" />
-                <span className="absolute bottom-3 left-2 right-2 text-white font-bold text-xl sm:text-2xl text-center leading-tight">
+                <span className="absolute bottom-2 left-2 right-2 text-white font-bold text-xl sm:text-2xl text-center leading-tight">
                   {opt.name}
                 </span>
                   {status !== 'idle' && isCorrect && (
@@ -159,11 +160,11 @@ export default function CharacterGame({ game }) {
       <AnimatePresence>
         {status !== 'idle' && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className={`mb-3 ${status === 'correct' ? 'feedback-correct' : 'feedback-wrong'}`}>
+            className={`mb-2 ${status === 'correct' ? 'feedback-correct' : 'feedback-wrong'}`}>
             <div className="flex items-start gap-3">
               {(() => {
                 const Art = CHARACTER_ART[current.name]
-                return <CharacterPortrait name={current.name} fallback={Art} emoji={current.emoji} size={86} />
+                return <CharacterPortrait name={current.name} fallback={Art} emoji={current.emoji} size={74} />
               })()}
               <div>
                 <p className="font-bold text-lg mb-1">
@@ -178,7 +179,7 @@ export default function CharacterGame({ game }) {
 
       <AnimatePresence>
         {status !== 'idle' && (
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-auto pt-1 flex justify-center">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="pt-1 flex justify-center">
             <button onClick={next} className="btn-teal flex items-center gap-2">
               {qIdx + 1 >= CHAR_QUESTIONS.length ? 'Susunod na Laro' : 'Susunod na Karakter'}
               <ChevronRight size={18} />

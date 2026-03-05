@@ -125,6 +125,7 @@ export default function StoryOrder({ game }) {
   }
 
   function checkOrder() {
+    sound.playClick()
     const res = items.map((item, pos) => item.correctIdx === pos ? 'correct' : 'wrong')
     setResults(res)
     setChecked(true)
@@ -138,6 +139,7 @@ export default function StoryOrder({ game }) {
   }
 
   function reset() {
+    sound.playClick()
     setItems(makeItems(STORY_EVENTS))
     setResults([])
     setChecked(false)

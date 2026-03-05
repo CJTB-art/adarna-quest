@@ -42,6 +42,7 @@ export default function VocabGame({ game }) {
   // ── Click a source tile ──────────────────────────────
   function clickTile(tile) {
     if (tile.used || status !== 'idle') return
+    sound.playClick()
     const newAnswer = [...answer, { letter: tile.letter, tileId: tile.id }]
     setTiles(t => t.map(t => t.id === tile.id ? { ...t, used: true } : t))
     setAnswer(newAnswer)
@@ -51,6 +52,7 @@ export default function VocabGame({ game }) {
   // ── Remove a letter from the answer row ─────────────
   function removeAnswerLetter(idx) {
     if (status !== 'idle') return
+    sound.playClick()
     const removed = answer[idx]
     setTiles(t => t.map(t => t.id === removed.tileId ? { ...t, used: false } : t))
     setAnswer(a => a.filter((_, i) => i !== idx))
@@ -58,6 +60,7 @@ export default function VocabGame({ game }) {
 
   // ── Clear all ────────────────────────────────────────
   function clearAll() {
+    sound.playClick()
     setTiles(buildTiles(current.word))
     setAnswer([])
     setStatus('idle')

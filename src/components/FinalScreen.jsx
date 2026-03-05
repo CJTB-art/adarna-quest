@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import { Trophy, Star, RotateCcw, Award } from 'lucide-react'
+import { useSound } from '../hooks/useSound'
 
 // ── Score → star rating ──────────────────────────────────
 function getStars(score) {
@@ -52,6 +53,7 @@ export default function FinalScreen({ game }) {
   const stars   = getStars(game.score)
   const message = getMessage(game.score)
   const earned  = BADGES.filter(b => game.score >= b.threshold)
+  const sound   = useSound()
 
   useEffect(() => {
     fireConfetti()
@@ -187,7 +189,10 @@ export default function FinalScreen({ game }) {
         transition={{ delay: 1.5 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={game.reset}
+        onClick={() => {
+          sound.playClick()
+          game.reset()
+        }}
         className="btn-purple flex items-center gap-2"
       >
         <RotateCcw size={18} />

@@ -38,6 +38,7 @@ export default function PuzzleReveal({ game }) {
 
   function choose(opt) {
     if (status !== 'idle') return
+    sound.playClick()
     if (opt.correct) {
       setStatus('correct')
       game.addScore('puzzleCorrect')
@@ -100,7 +101,7 @@ export default function PuzzleReveal({ game }) {
             </motion.button>
           </motion.div>
         ) : (
-          <motion.div key="quiz" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col justify-start pt-0">
+          <motion.div key="quiz" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col justify-center">
             <div className="rounded-3xl border border-gold/20 bg-gold/5 p-3 mb-2.5">
               <p className="text-white/60 text-lg uppercase tracking-widest mb-1">
                 Tanong {qIdx + 1} ng {PUZZLE_QUESTIONS.length}

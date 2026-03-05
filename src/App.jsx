@@ -8,6 +8,7 @@ import CharacterGame     from './components/CharacterGame'
 import PuzzleReveal      from './components/PuzzleReveal'
 import StoryOrder        from './components/StoryOrder'
 import FinalScreen       from './components/FinalScreen'
+import { useSound }      from './hooks/useSound'
 
 // ── Screen index → component map ────────────────────────
 //    0 = Home  (no score bar)
@@ -36,6 +37,7 @@ export default function App() {
   const game           = useGame()
   const starsRef       = useRef(null)
   const ActiveScreen   = SCREENS[game.screen]
+  const sound          = useSound()
 
   // ── Generate starfield once on mount ──────────────────
   useEffect(() => {
@@ -55,6 +57,17 @@ export default function App() {
         opacity: ${(0.2 + Math.random() * 0.8).toFixed(2)};
       `
       bg.appendChild(star)
+    }
+  }, [])
+
+  useEffect(() => {
+    sound.startBgm()
+    const unlock = () => sound.startBgm()
+    window.addEventListener('pointerdown', unlock, { once: true })
+    window.addEventListener('keydown', unlock, { once: true })
+    return () => {
+      window.removeEventListener('pointerdown', unlock)
+      window.removeEventListener('keydown', unlock)
     }
   }, [])
 
