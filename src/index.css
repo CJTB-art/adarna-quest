@@ -1,0 +1,157 @@
+/* ── Tailwind Base Directives ─────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts import fallback ──────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+/* ── Global Base ───────────────────────────────────────── */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-deep font-body text-gold-light overflow-x-hidden;
+    background: radial-gradient(ellipse at 20% 50%, #2d0b55 0%, #1a0a2e 60%, #0a0015 100%);
+    min-height: 100vh;
+    font-size: clamp(17px, 1.05vw, 21px);
+    line-height: 1.5;
+  }
+
+  /* Remove default button styles */
+  button {
+    @apply cursor-pointer select-none;
+  }
+}
+
+/* ── Reusable Component Classes ────────────────────────── */
+@layer components {
+
+  /* Glass card */
+  .glass-card {
+    @apply bg-white/5 border border-gold/20 rounded-3xl backdrop-blur-md;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* Gold gradient text */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FFF4A0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Shimmer text effect */
+  .text-shimmer {
+    background: linear-gradient(90deg, #FFD700 0%, #FFF4A0 40%, #FFD700 60%, #B8860B 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Primary gold button */
+  .btn-gold {
+    @apply font-body font-black uppercase tracking-wider px-10 py-4 text-lg rounded-full
+           text-deep transition-all duration-200 active:scale-95;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    box-shadow: 0 4px 20px rgba(255,215,0,0.35);
+  }
+  .btn-gold:hover {
+    box-shadow: 0 6px 28px rgba(255,215,0,0.55);
+    transform: translateY(-2px);
+  }
+
+  /* Teal button */
+  .btn-teal {
+    @apply font-body font-black uppercase tracking-wider px-10 py-4 text-lg rounded-full
+           text-deep transition-all duration-200 active:scale-95;
+    background: linear-gradient(135deg, #00c9a7, #00a896);
+    box-shadow: 0 4px 20px rgba(0,201,167,0.35);
+  }
+  .btn-teal:hover {
+    box-shadow: 0 6px 28px rgba(0,201,167,0.55);
+    transform: translateY(-2px);
+  }
+
+  /* Purple button */
+  .btn-purple {
+    @apply font-body font-black uppercase tracking-wider px-10 py-4 text-lg rounded-full
+           text-white transition-all duration-200 active:scale-95;
+    background: linear-gradient(135deg, #7b2fbf, #3b0d6b);
+    box-shadow: 0 4px 20px rgba(123,47,191,0.35);
+  }
+  .btn-purple:hover {
+    box-shadow: 0 6px 28px rgba(123,47,191,0.55);
+    transform: translateY(-2px);
+  }
+
+  /* Letter tile (vocab game) */
+  .letter-tile {
+    @apply rounded-xl font-black text-3xl sm:text-4xl flex items-center justify-center
+           border-2 transition-all duration-150 select-none;
+    width: clamp(5.2rem, 7vw, 8.4rem);
+    height: clamp(5.2rem, 7vw, 8.4rem);
+    background: linear-gradient(135deg, #7b2fbf, #5c1a9e);
+    border-color: rgba(255,215,0,0.35);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    color: #FFF4A0;
+  }
+  .letter-tile:hover:not(.used) {
+    @apply -translate-y-1 scale-110;
+    border-color: #FFD700;
+    box-shadow: 0 6px 18px rgba(255,215,0,0.4);
+  }
+  .letter-tile.used {
+    @apply opacity-20 pointer-events-none;
+  }
+
+  /* Answer slot */
+  .answer-slot {
+    @apply rounded-xl font-black text-3xl sm:text-4xl flex items-center justify-center
+           border-2 border-dashed transition-all duration-150;
+    width: clamp(5.2rem, 7vw, 8.4rem);
+    height: clamp(5.2rem, 7vw, 8.4rem);
+    border-color: rgba(255,215,0,0.3);
+    background: rgba(255,255,255,0.03);
+    color: #FFF4A0;
+  }
+  .answer-slot:not(:empty):hover {
+    @apply border-red-400 bg-red-500/10;
+  }
+
+  /* Feedback boxes */
+  .feedback-correct {
+    @apply rounded-3xl p-6 border;
+    background: rgba(0,230,118,0.12);
+    border-color: #00e676;
+  }
+  .feedback-wrong {
+    @apply rounded-3xl p-6 border;
+    background: rgba(255,68,68,0.12);
+    border-color: #ff4444;
+  }
+}
+
+/* ── Utility extras ─────────────────────────────────────── */
+@layer utilities {
+  /* Star particle */
+  .star-particle {
+    @apply absolute rounded-full bg-white animate-twinkle;
+  }
+
+  /* Section progress dot */
+  .prog-dot {
+    @apply w-4 h-4 rounded-full border-2 transition-all duration-300;
+  }
+  .prog-dot-done    { @apply bg-jade border-jade; }
+  .prog-dot-active  { @apply bg-gold border-gold shadow-gold; }
+  .prog-dot-pending { @apply bg-transparent border-white/30; }
+}
