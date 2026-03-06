@@ -103,7 +103,7 @@ export default function App() {
       />
 
       {/* ── App content ── */}
-      <div className="relative z-10 h-full w-full max-w-[min(99vw,1920px)] mx-auto px-3 sm:px-5 lg:px-8 py-2 sm:py-3 flex flex-col">
+      <div className="relative z-10 h-full w-full max-w-[min(99vw,1920px)] mx-auto px-2 sm:px-4 lg:px-6 py-1.5 sm:py-2 flex flex-col">
         {/* Score bar — hidden on home & final */}
         {game.screen > 0 && game.screen < 5 && (
           <ScoreBar
@@ -128,7 +128,7 @@ export default function App() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="h-full"
+              className="h-full min-h-0"
             >
               <ActiveScreen game={game} />
             </motion.div>

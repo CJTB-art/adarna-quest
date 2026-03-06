@@ -60,7 +60,7 @@ function SortableEvent({ item, position, result }) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-start gap-3 rounded-3xl border-2 p-4
+      className={`flex items-start gap-2.5 rounded-2xl border-2 p-3
         ${borderColor} ${bgColor}
         transition-colors duration-200
         ${isDragging ? 'shadow-2xl shadow-gold/20' : ''}
@@ -77,8 +77,8 @@ function SortableEvent({ item, position, result }) {
 
       {/* Position number */}
       <div className={`
-        w-10 h-10 rounded-full flex items-center justify-center
-        font-bold text-base flex-shrink-0 mt-0.5
+        w-9 h-9 rounded-full flex items-center justify-center
+        font-bold text-sm sm:text-base flex-shrink-0 mt-0.5
         ${result === 'correct' ? 'bg-jade/20 text-jade border-2 border-jade'
         : result === 'wrong'   ? 'bg-red-400/20 text-red-300 border-2 border-red-400'
         :                        'bg-gold/10 text-gold border-2 border-gold/40'}
@@ -87,7 +87,7 @@ function SortableEvent({ item, position, result }) {
       </div>
 
       {/* Text */}
-      <p className="text-white/90 text-base leading-relaxed flex-1">{item.text}</p>
+      <p className="text-white/90 text-sm sm:text-base leading-relaxed flex-1">{item.text}</p>
 
       {/* Status icon */}
       {result === 'correct' && <CheckCircle2 size={18} className="text-jade flex-shrink-0 mt-0.5" />}
@@ -147,21 +147,21 @@ export default function StoryOrder({ game }) {
   }
 
   return (
-    <div className="h-full glass-card p-6 sm:p-8 flex flex-col overflow-hidden">
+    <div className="h-full glass-card p-4 sm:p-5 lg:p-6 flex flex-col overflow-hidden">
 
       {/* Header */}
       <div className="flex items-center gap-2 mb-1">
         <BookMarked size={22} className="text-amber" />
         <h2 className="font-display text-gold text-2xl sm:text-3xl">Ayusin ang Kwento</h2>
       </div>
-      <p className="text-white/70 text-lg mb-5">
+      <p className="text-white/70 text-base sm:text-lg mb-3">
         I-drag ang mga pangyayari para ayusin sa tamang pagkakasunud-sunod.
       </p>
 
       {/* Instruction */}
-      <div className="rounded-2xl border border-gold/20 bg-gold/5 px-5 py-3 mb-4 flex items-start gap-3">
+      <div className="rounded-2xl border border-gold/20 bg-gold/5 px-4 py-2.5 mb-3 flex items-start gap-2.5">
         <GripVertical size={16} className="text-gold flex-shrink-0 mt-0.5" />
-        <p className="text-white/80 text-base leading-relaxed">
+        <p className="text-white/80 text-sm sm:text-base leading-relaxed">
           <span className="text-gold font-bold">Tip:</span>{' '}
           Hawakan ang <span className="text-gold">grip icon</span> sa kaliwa ng bawat kahon,
           tapos i-drag papunta sa tamang posisyon.
@@ -175,7 +175,7 @@ export default function StoryOrder({ game }) {
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
-          <div className="flex flex-col gap-2 mb-4 flex-1 min-h-0">
+          <div className="flex flex-col gap-2 mb-3 flex-1 min-h-0 overflow-y-auto pr-1">
             {items.map((item, pos) => (
               <SortableEvent
                 key={item.id}
@@ -194,7 +194,7 @@ export default function StoryOrder({ game }) {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`mb-6 rounded-3xl p-5 border flex items-start gap-3
+            className={`mb-3 rounded-3xl p-4 border flex items-start gap-3
               ${allOk
                 ? 'border-jade bg-jade/10'
                 : 'border-red-400 bg-red-400/10'}`}
@@ -204,14 +204,14 @@ export default function StoryOrder({ game }) {
               : <XCircle      size={22} className="text-red-400 flex-shrink-0 mt-0.5" />
             }
             <div>
-              <p className="font-bold text-lg">
+              <p className="font-bold text-base sm:text-lg">
                 {allOk
                   ? 'Tama! Perpektong pagkakasunud-sunod! Papunta na sa Final Screen...'
                   : 'Hindi pa tama. Ang mga pulang kahon ay nasa maling posisyon. Subukan muli!'
                 }
               </p>
               {!allOk && (
-                <p className="text-white/70 text-base mt-1">
+                <p className="text-white/70 text-sm sm:text-base mt-1">
                   {results.filter(r => r === 'correct').length} sa {STORY_EVENTS.length} ang tama.
                 </p>
               )}

@@ -85,14 +85,14 @@ export default function CharacterGame({ game }) {
   }
 
   return (
-    <div className="h-full glass-card px-4 py-4 sm:px-5 sm:py-5 flex flex-col overflow-hidden">
+    <div className="h-full glass-card px-4 py-3 sm:px-5 sm:py-4 flex flex-col overflow-hidden">
       <div className="flex items-center gap-2 mb-0.5">
         <Users size={22} className="text-rose" />
         <h2 className="font-display text-gold text-2xl sm:text-3xl">Sino Ito?</h2>
       </div>
-      <p className="text-white/70 text-base sm:text-lg mb-3">Basahin ang clue. I-click ang tamang karakter!</p>
+      <p className="text-white/70 text-sm sm:text-base mb-2">Basahin ang clue. I-click ang tamang karakter!</p>
 
-      <div className="flex gap-3 justify-center mb-3">
+      <div className="flex gap-2 justify-center mb-2">
         {CHAR_QUESTIONS.map((_, i) => (
           <div key={i} className={`h-3 rounded-full transition-all duration-300 ${
             i < qIdx ? 'bg-jade w-10' : i === qIdx ? 'bg-gold w-10 shadow-gold' : 'bg-white/15 w-7'
@@ -101,13 +101,13 @@ export default function CharacterGame({ game }) {
       </div>
 
       <motion.div key={qIdx} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-        className="rounded-3xl border border-gold/20 bg-gold/5 p-4 mb-3">
-        <p className="text-white/60 text-base uppercase tracking-widest mb-2">Clue:</p>
-        <p className="text-white/95 text-lg sm:text-xl leading-relaxed italic"
+        className="rounded-3xl border border-gold/20 bg-gold/5 p-3 sm:p-4 mb-2">
+        <p className="text-white/60 text-sm sm:text-base uppercase tracking-widest mb-1.5">Clue:</p>
+        <p className="text-white/95 text-base sm:text-lg leading-relaxed italic"
           dangerouslySetInnerHTML={{ __html: `"${current.clue}"` }} />
       </motion.div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-2">
         {options.map((opt) => {
           const Art = CHARACTER_ART[opt.name]
           const isCorrect  = opt.name === current.name
@@ -124,7 +124,7 @@ export default function CharacterGame({ game }) {
               disabled={status !== 'idle'}
               whileHover={status === 'idle' ? { y: -4, scale: 1.03 } : {}}
               whileTap={status === 'idle'   ? { scale: 0.96 } : {}}
-              className={`rounded-3xl border-2 p-0 h-[230px] sm:h-[270px] overflow-hidden
+              className={`rounded-3xl border-2 p-0 h-[clamp(170px,24vh,250px)] overflow-hidden
                 transition-all duration-200 font-body ${borderCls} ${bgCls}`}>
               <div className="relative h-full w-full">
                 <CharacterPortrait
@@ -134,8 +134,8 @@ export default function CharacterGame({ game }) {
                   size="100%"
                   className="w-full h-full rounded-[22px]"
                 />
-                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/85 via-black/50 to-transparent pointer-events-none" />
-                <span className="absolute bottom-2 left-2 right-2 text-white font-bold text-xl sm:text-2xl text-center leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.95)]">
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/85 via-black/50 to-transparent pointer-events-none" />
+                <span className="absolute bottom-2 left-2 right-2 text-white font-bold text-lg sm:text-2xl text-center leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.95)]">
                   {opt.name}
                 </span>
                   {status !== 'idle' && isCorrect && (
@@ -167,10 +167,10 @@ export default function CharacterGame({ game }) {
                 return <CharacterPortrait name={current.name} fallback={Art} emoji={current.emoji} size={74} />
               })()}
               <div>
-                <p className="font-bold text-lg mb-1">
+                <p className="font-bold text-base sm:text-lg mb-1">
                   {status === 'correct' ? `Tama! Si ${current.name}!` : `Mali. Ang tamang sagot ay si ${current.name}.`}
                 </p>
-                <p className="text-white/80 text-sm sm:text-base leading-relaxed">{current.description}</p>
+                <p className="text-white/80 text-xs sm:text-base leading-relaxed">{current.description}</p>
               </div>
             </div>
           </motion.div>

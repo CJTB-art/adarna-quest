@@ -59,28 +59,28 @@ export default function PuzzleReveal({ game }) {
   }
 
   return (
-    <div className="h-full glass-card px-4 py-3.5 sm:px-5 sm:py-4 flex flex-col overflow-hidden">
-      <div className="flex items-start justify-between gap-3 mb-0.5">
+    <div className="h-full glass-card px-3.5 py-3 sm:px-4 sm:py-3.5 flex flex-col overflow-hidden">
+      <div className="flex items-start justify-between gap-3 mb-1 flex-wrap">
         <div className="flex items-center gap-2">
           <Grid2x2 size={22} className="text-teal" />
           <h2 className="font-display text-gold text-2xl sm:text-3xl">I-reveal ang Ibong Adarna!</h2>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2">
           {[
             { val: game.tilesRevealed, lbl: 'Na-reveal',  color: 'text-gold' },
             { val: game.totalTiles,    lbl: 'Kabuuan',    color: 'text-white/60' },
             { val: `${Math.round((game.tilesRevealed / game.totalTiles) * 100)}%`, lbl: 'Kumpleto', color: 'text-teal' },
           ].map(s => (
-            <div key={s.lbl} className="glass-card px-3 py-2 text-center min-w-[108px]">
+            <div key={s.lbl} className="glass-card px-2.5 py-1.5 sm:px-3 sm:py-2 text-center min-w-[92px] sm:min-w-[102px]">
               <div className={`font-display text-xl sm:text-2xl leading-none ${s.color}`}>{s.val}</div>
-              <div className="text-white/60 text-xs sm:text-sm uppercase tracking-widest">{s.lbl}</div>
+              <div className="text-white/60 text-[10px] sm:text-xs uppercase tracking-widest">{s.lbl}</div>
             </div>
           ))}
         </div>
       </div>
-      <p className="text-white/70 text-base sm:text-lg mb-2">Sumagot nang tama para ma-unlock ang bawat puzzle tile.</p>
+      <p className="text-white/70 text-sm sm:text-base mb-1.5">Sumagot nang tama para ma-unlock ang bawat puzzle tile.</p>
 
-      <div className="grid xl:grid-cols-2 gap-3 items-stretch flex-1 min-h-0 pt-0">
+      <div className="grid lg:grid-cols-2 gap-2.5 items-stretch flex-1 min-h-0 pt-0">
         <AdarnaPuzzleImage tilesRevealed={game.tilesRevealed} totalTiles={game.totalTiles} />
 
       <AnimatePresence mode="wait">
@@ -101,15 +101,15 @@ export default function PuzzleReveal({ game }) {
             </motion.button>
           </motion.div>
         ) : (
-          <motion.div key="quiz" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col justify-center">
-            <div className="rounded-3xl border border-gold/20 bg-gold/5 p-3 mb-2.5">
-              <p className="text-white/60 text-lg uppercase tracking-widest mb-1">
+          <motion.div key="quiz" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full min-h-0 flex flex-col justify-center">
+            <div className="rounded-3xl border border-gold/20 bg-gold/5 p-3 mb-2">
+              <p className="text-white/60 text-base sm:text-lg uppercase tracking-widest mb-1">
                 Tanong {qIdx + 1} ng {PUZZLE_QUESTIONS.length}
               </p>
-              <p className="text-white font-bold text-2xl sm:text-3xl">{current?.question}</p>
+              <p className="text-white font-bold text-xl sm:text-2xl">{current?.question}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5 mb-3">
+            <div className="grid grid-cols-2 gap-2 mb-2.5">
               {options.map((opt, i) => {
                 let cls = 'border-white/15 bg-white/5 hover:border-teal/60 hover:bg-teal/8'
                 if (status !== 'idle') {
@@ -121,7 +121,7 @@ export default function PuzzleReveal({ game }) {
                     disabled={status !== 'idle'}
                     whileHover={status === 'idle' ? { y: -2 } : {}}
                     whileTap={status === 'idle'   ? { scale: 0.97 } : {}}
-                    className={`rounded-2xl border-2 px-4 py-3 text-xl sm:text-2xl font-bold text-left
+                    className={`rounded-2xl border-2 px-3 py-2.5 text-lg sm:text-xl font-bold text-left
                       transition-all duration-200 font-body text-white ${cls}`}>
                     <span className="mr-1 text-white/40">{String.fromCharCode(65+i)}.</span>
                     {opt.text}
@@ -134,7 +134,7 @@ export default function PuzzleReveal({ game }) {
             <AnimatePresence>
               {status !== 'idle' && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                  className={`mb-3 flex items-center gap-3 p-3 rounded-2xl border text-base font-bold
+                  className={`mb-2.5 flex items-center gap-2 p-2.5 rounded-2xl border text-sm sm:text-base font-bold
                     ${status === 'correct' ? 'border-jade bg-jade/10 text-jade' : 'border-red-400 bg-red-400/10 text-red-300'}`}>
                   {status === 'correct'
                     ? <><CheckCircle2 size={18} /> Tama! Isang tile ang na-reveal! +{game.POINTS.puzzleCorrect} pts</>

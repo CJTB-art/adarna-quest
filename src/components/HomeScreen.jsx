@@ -113,13 +113,13 @@ export default function HomeScreen({ game }) {
   const sound = useSound()
 
   return (
-    <div className="h-full w-full grid lg:grid-cols-[1.05fr_0.95fr] gap-4 lg:gap-6 items-stretch overflow-hidden">
-      <div className="h-full flex flex-col gap-4">
+    <div className="h-full w-full grid lg:grid-cols-[1.05fr_0.95fr] gap-3 lg:gap-5 items-stretch overflow-hidden">
+      <div className="h-full min-h-0 flex flex-col gap-3">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="font-display text-5xl sm:text-6xl xl:text-7xl text-shimmer leading-tight"
+          className="font-display text-[clamp(2.1rem,4.3vw,4.4rem)] text-shimmer leading-tight"
         >
           Adarna Quest
         </motion.h1>
@@ -128,7 +128,7 @@ export default function HomeScreen({ game }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-teal-light/80 italic text-lg sm:text-xl tracking-widest"
+          className="text-teal-light/80 italic text-base sm:text-lg tracking-[0.18em]"
         >
           - Interactive Classroom Game -
         </motion.p>
@@ -137,9 +137,9 @@ export default function HomeScreen({ game }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.45 }}
-          className="glass-card px-7 py-5"
+          className="glass-card px-5 py-4 sm:px-6 sm:py-4"
         >
-          <p className="text-white/80 text-lg leading-relaxed">
+          <p className="text-white/80 text-base sm:text-lg leading-relaxed">
             Maligayang pagdating, mga estudyante! Subukan ang inyong kaalaman tungkol sa{' '}
             <span className="text-gold font-bold">Ibong Adarna</span>. Sumagot nang tama para ma-reveal
             ang sikat na ibon at makakuha ng pinakamataas na puntos!
@@ -150,7 +150,7 @@ export default function HomeScreen({ game }) {
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-2 gap-4"
+          className="grid grid-cols-2 gap-3"
         >
           {SECTIONS.map((s) => (
             <motion.button
@@ -160,13 +160,13 @@ export default function HomeScreen({ game }) {
                 sound.playClick()
                 game.startAtSection(s.screen)
               }}
-              className={`relative overflow-hidden bg-gradient-to-br ${s.color} border ${s.border} rounded-3xl p-6 min-h-[160px] flex flex-col gap-3 backdrop-blur-sm text-left transition-transform duration-200 hover:scale-[1.02] hover:border-gold/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70`}
+              className={`relative overflow-hidden bg-gradient-to-br ${s.color} border ${s.border} rounded-3xl p-4 sm:p-5 min-h-[clamp(124px,18vh,170px)] flex flex-col gap-2 backdrop-blur-sm text-left transition-transform duration-200 hover:scale-[1.02] hover:border-gold/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70`}
             >
               <SectionVisual screen={s.screen} />
               {s.icon}
-              <div className="font-bold text-2xl text-white relative z-10">{s.title}</div>
-              <div className="text-white/70 text-base relative z-10">{s.sub}</div>
-              <div className="flex items-center gap-1 text-white/60 text-base mt-auto relative z-10">
+              <div className="font-bold text-xl sm:text-2xl text-white relative z-10">{s.title}</div>
+              <div className="text-white/70 text-sm sm:text-base relative z-10">{s.sub}</div>
+              <div className="flex items-center gap-1 text-white/60 text-sm sm:text-base mt-auto relative z-10">
                 <Clock size={11} />
                 {s.time}
               </div>
@@ -184,7 +184,7 @@ export default function HomeScreen({ game }) {
             sound.playClick()
             game.startAtSection(1)
           }}
-          className="btn-gold w-fit flex items-center gap-3 text-2xl px-14 py-5 mt-auto self-center"
+          className="btn-gold w-fit flex items-center gap-2.5 text-xl sm:text-2xl px-10 sm:px-12 py-3.5 sm:py-4 mt-auto self-center"
         >
           Simulan ang Laro
           <ChevronRight size={22} />

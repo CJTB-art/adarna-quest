@@ -93,19 +93,19 @@ export default function VocabGame({ game }) {
   }
 
   return (
-    <div className="h-full glass-card p-6 sm:p-8 flex flex-col overflow-hidden">
+    <div className="h-full glass-card p-4 sm:p-5 lg:p-6 flex flex-col overflow-hidden">
 
       {/* Header */}
       <div className="flex items-center gap-2 mb-1">
         <BookOpen size={22} className="text-gold" />
         <h2 className="font-display text-gold text-2xl sm:text-3xl">Talasalitaan Challenge</h2>
       </div>
-      <p className="text-white/70 text-lg mb-6">
+      <p className="text-white/70 text-base sm:text-lg mb-3 sm:mb-4">
         I-click ang mga letra para mabuo ang tamang salita!
       </p>
 
       {/* Progress dots */}
-      <div className="flex gap-3 justify-center mb-5">
+      <div className="flex gap-2.5 justify-center mb-3 sm:mb-4">
         {VOCAB_WORDS.map((_, i) => (
           <motion.div
             key={i}
@@ -119,12 +119,12 @@ export default function VocabGame({ game }) {
       </div>
 
       {/* Word counter */}
-      <p className="text-center text-white/60 text-lg tracking-widest mb-5">
+      <p className="text-center text-white/60 text-base sm:text-lg tracking-widest mb-3 sm:mb-4">
         SALITA {wordIdx + 1} NG {VOCAB_WORDS.length}
       </p>
 
       {/* ── Scrambled letter tiles ── */}
-      <div className="flex flex-wrap gap-5 sm:gap-6 justify-center min-h-[118px] mb-6">
+      <div className="flex flex-wrap gap-3 sm:gap-4 justify-center min-h-[96px] mb-4">
         <AnimatePresence>
           {tiles.map((tile) => (
             <motion.button
@@ -145,10 +145,10 @@ export default function VocabGame({ game }) {
       </div>
 
       {/* Divider label */}
-      <p className="text-center text-white/45 text-base tracking-widest mb-3">▼ IYONG SAGOT ▼</p>
+      <p className="text-center text-white/45 text-sm sm:text-base tracking-widest mb-2">▼ IYONG SAGOT ▼</p>
 
       {/* ── Answer slots ── */}
-      <div className="flex flex-wrap gap-5 sm:gap-6 justify-center min-h-[118px] mb-5">
+      <div className="flex flex-wrap gap-3 sm:gap-4 justify-center min-h-[96px] mb-3">
         {Array.from({ length: current.word.length }).map((_, i) => {
           const filled = answer[i]
           return (
@@ -187,7 +187,7 @@ export default function VocabGame({ game }) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`mb-5 ${status === 'correct' ? 'feedback-correct' : 'feedback-wrong'}`}
+            className={`mb-3 ${status === 'correct' ? 'feedback-correct' : 'feedback-wrong'}`}
           >
             <div className="flex items-start gap-3">
               {status === 'correct'
@@ -195,13 +195,13 @@ export default function VocabGame({ game }) {
                 : <XCircle     size={24} className="text-red-400 flex-shrink-0 mt-0.5" />
               }
               <div>
-                <p className="font-bold text-lg">
+                <p className="font-bold text-base sm:text-lg">
                   {status === 'correct'
                     ? `Tama! Ang salita ay "${current.word}"`
                     : `Mali. Ang tamang sagot ay: ${current.word}`
                   }
                 </p>
-                <p className="text-white/90 text-xl leading-relaxed mt-2">
+                <p className="text-white/90 text-base sm:text-lg leading-relaxed mt-1.5">
                   <span className="text-gold font-semibold">Kahulugan:</span>{' '}
                   {current.meaning}
                 </p>

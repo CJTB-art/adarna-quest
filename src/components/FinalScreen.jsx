@@ -62,14 +62,14 @@ export default function FinalScreen({ game }) {
   }, [])
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-between gap-3 overflow-hidden py-1">
+    <div className="h-full w-full flex flex-col items-center justify-start gap-2.5 overflow-y-auto py-1 pr-1">
 
       {/* Bird */}
       <motion.div
         initial={{ scale: 0, rotate: -20 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 180, damping: 12, delay: 0.1 }}
-        className="text-8xl mt-2 mb-1 animate-float select-none"
+        className="text-6xl sm:text-7xl mt-1 mb-0.5 animate-float select-none"
       >
         🦜
       </motion.div>
@@ -79,7 +79,7 @@ export default function FinalScreen({ game }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="font-display text-5xl sm:text-6xl text-shimmer text-center mb-2"
+        className="font-display text-4xl sm:text-5xl text-shimmer text-center mb-1"
       >
         Tapos Na!
       </motion.h1>
@@ -88,7 +88,7 @@ export default function FinalScreen({ game }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="text-white/60 italic text-base sm:text-lg tracking-widest"
+        className="text-white/60 italic text-sm sm:text-base tracking-widest"
       >
         - Adarna Quest Complete -
       </motion.p>
@@ -98,21 +98,21 @@ export default function FinalScreen({ game }) {
         initial={{ opacity: 0, scale: 0.85 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.45, type: 'spring', stiffness: 200, damping: 15 }}
-        className="glass-card px-10 py-5 text-center w-full max-w-lg"
+        className="glass-card px-6 py-4 text-center w-full max-w-md"
       >
-        <div className="text-white/50 text-base uppercase tracking-widest mb-1">Kabuuang Puntos</div>
+        <div className="text-white/50 text-sm uppercase tracking-widest mb-1">Kabuuang Puntos</div>
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.6, type: 'spring', stiffness: 200 }}
-          className="font-display text-7xl text-gold mb-4"
+          className="font-display text-5xl sm:text-6xl text-gold mb-3"
           style={{ textShadow: '0 0 40px rgba(255,215,0,0.5)' }}
         >
           {game.score}
         </motion.div>
 
         {/* Stars */}
-        <div className="flex justify-center gap-1 mb-4">
+        <div className="flex justify-center gap-1 mb-2.5">
           {[1, 2, 3, 4, 5].map((s) => (
             <motion.div
               key={s}
@@ -121,7 +121,7 @@ export default function FinalScreen({ game }) {
               transition={{ delay: 0.7 + s * 0.1, type: 'spring', stiffness: 300 }}
             >
               <Star
-                size={28}
+                size={24}
                 className={s <= stars ? 'text-gold fill-gold' : 'text-white/20'}
               />
             </motion.div>
@@ -129,7 +129,7 @@ export default function FinalScreen({ game }) {
         </div>
 
         {/* Tiles revealed */}
-        <div className="text-white/70 text-lg">
+        <div className="text-white/70 text-base sm:text-lg">
           🧩 {game.tilesRevealed} / {game.totalTiles} tiles na-reveal
         </div>
       </motion.div>
@@ -139,9 +139,9 @@ export default function FinalScreen({ game }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.1 }}
-        className="glass-card px-6 py-4 w-full max-w-6xl text-center"
+        className="glass-card px-5 py-3.5 w-full max-w-5xl text-center"
       >
-        <p className="text-white/90 text-lg leading-relaxed">{message}</p>
+        <p className="text-white/90 text-base sm:text-lg leading-relaxed">{message}</p>
       </motion.div>
 
       {/* Achievements */}
@@ -152,19 +152,19 @@ export default function FinalScreen({ game }) {
           animate="show"
           className="w-full max-w-6xl"
         >
-          <div className="flex items-center gap-2 mb-3 justify-center">
+          <div className="flex items-center gap-2 mb-2 justify-center">
             <Award size={18} className="text-gold" />
             <h3 className="font-display text-gold text-xl">Mga Natanggap na Badge</h3>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
             {earned.map((badge) => (
               <motion.div
                 key={badge.key}
                 variants={item}
-                className="glass-card border border-gold/20 rounded-3xl p-4 text-center"
+                className="glass-card border border-gold/20 rounded-3xl p-3 text-center"
               >
-                <div className="text-4xl mb-2">{badge.icon}</div>
-                <div className="text-white/90 text-base font-bold">{badge.label}</div>
+                <div className="text-3xl mb-1.5">{badge.icon}</div>
+                <div className="text-white/90 text-sm sm:text-base font-bold">{badge.label}</div>
               </motion.div>
             ))}
           </div>
@@ -176,7 +176,7 @@ export default function FinalScreen({ game }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}
-        className="text-center text-white/45 text-base italic max-w-4xl leading-relaxed"
+        className="text-center text-white/45 text-sm sm:text-base italic max-w-4xl leading-relaxed"
       >
         "Ang Ibong Adarna ay simbolo ng tagumpay, pag-asa, at pagmamahal sa pamilya."
         <br />- Huwag kalimutan ang aral ng kwento!

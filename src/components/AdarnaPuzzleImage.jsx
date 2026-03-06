@@ -71,21 +71,21 @@ export default function AdarnaPuzzleImage({ tilesRevealed = 0, totalTiles = 16 }
       `}</style>
 
       {tilesRevealed >= totalTiles && (
-        <div className="mb-3">
+        <div className="mb-2">
           <img
             src={imgSrc}
             alt="Ibong Adarna puzzle complete"
             onError={() => setImgSrc(FALLBACK_IMAGE)}
-            className="rounded-2xl border-2 border-gold/40 w-full max-w-[min(92vw,620px)] mx-auto block object-cover"
+            className="rounded-2xl border-2 border-gold/40 w-full max-w-[min(90vw,560px)] mx-auto block object-cover"
             style={{ boxShadow: '0 0 60px rgba(255,215,0,0.3)' }}
           />
-          <p className="text-center text-gold/80 text-base mt-3 font-display">Ang Ibong Adarna</p>
+          <p className="text-center text-gold/80 text-sm sm:text-base mt-2 font-display">Ang Ibong Adarna</p>
         </div>
       )}
 
       {tilesRevealed < totalTiles && (
         <div
-          className="grid gap-0 w-full max-w-[min(92vw,620px)] mx-auto mb-2 rounded-2xl border border-gold/25 overflow-hidden"
+          className="grid gap-0 w-full max-w-[min(90vw,560px)] mx-auto mb-1.5 rounded-2xl border border-gold/25 overflow-hidden"
           style={{
             gridTemplateColumns: `repeat(${COLS}, 1fr)`,
             background: 'rgba(0,0,0,0.4)',
