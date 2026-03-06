@@ -1,31 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MonitorUp, MonitorDown } from 'lucide-react'
-import { useGame }       from './hooks/useGame'
-import ScoreBar          from './components/ScoreBar'
-import HomeScreen        from './components/HomeScreen'
-import VocabGame         from './components/VocabGame'
-import CharacterGame     from './components/CharacterGame'
 import PuzzleReveal      from './components/PuzzleReveal'
-import StoryOrder        from './components/StoryOrder'
-import FinalScreen       from './components/FinalScreen'
 import { useSound }      from './hooks/useSound'
-
-// ── Screen index → component map ────────────────────────
-//    0 = Home  (no score bar)
-//    1 = Vocab
-//    2 = Characters
-//    3 = Puzzle
-//    4 = Story Order
-//    5 = Final
-const SCREENS = [
-  HomeScreen,
-  VocabGame,
-  CharacterGame,
-  PuzzleReveal,
-  StoryOrder,
-  FinalScreen,
-]
 
 // ── Page transition variants ─────────────────────────────
 const pageVariants = {
@@ -35,9 +12,7 @@ const pageVariants = {
 }
 
 export default function App() {
-  const game           = useGame()
   const starsRef       = useRef(null)
-  const ActiveScreen   = SCREENS[game.screen]
   const sound          = useSound()
   const [musicOn, setMusicOn] = useState(() => {
     try {
@@ -125,7 +100,7 @@ export default function App() {
       />
 
       {/* ── App content ── */}
-      <div className="relative z-10 h-full w-full max-w-[min(99vw,1920px)] mx-auto px-2 sm:px-4 lg:px-6 py-1.5 sm:py-2 flex flex-col">
+      <div className="relative z-10 h-full w-full max-w-[99.6vw] mx-auto px-1 sm:px-2 py-1 sm:py-1.5 flex flex-col">
         <button
           type="button"
           onClick={() => {
@@ -139,33 +114,18 @@ export default function App() {
           {classroomMode ? 'Classroom On' : 'Classroom Off'}
         </button>
 
-        {/* Score bar — hidden on home & final */}
-        {game.screen > 0 && game.screen < 5 && (
-          <ScoreBar
-            score={game.score}
-            section={game.screen}
-            tilesRevealed={game.tilesRevealed}
-            totalTiles={game.totalTiles}
-            musicOn={musicOn}
-            onToggleMusic={() => {
-              sound.playClick()
-              setMusicOn(v => !v)
-            }}
-          />
-        )}
-
         {/* Animated screen transitions */}
         <div className="flex-1 min-h-0">
           <AnimatePresence mode="wait">
             <motion.div
-              key={game.screen}
+              key="puzzle-only"
               variants={pageVariants}
               initial="initial"
               animate="animate"
               exit="exit"
               className="h-full min-h-0"
             >
-              <ActiveScreen game={game} />
+              <PuzzleReveal />
             </motion.div>
           </AnimatePresence>
         </div>

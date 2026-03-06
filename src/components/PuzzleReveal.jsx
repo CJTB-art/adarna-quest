@@ -1,161 +1,267 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Grid2x2, ChevronRight, CheckCircle2, XCircle, Sparkles } from 'lucide-react'
-import { PUZZLE_QUESTIONS } from '../data/gameData'
-import AdarnaPuzzleImage from './AdarnaPuzzleImage'
+import { useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  closestCenter,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
+import { Grid2x2, RotateCcw, Sparkles } from 'lucide-react'
 import { useSound } from '../hooks/useSound'
 
-function shuffleArray(arr) {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]]
+const COLS = 4
+const ROWS = 4
+const TOTAL_TILES = COLS * ROWS
+const PUZZLE_IMAGE = '/images/adarna/ibong-adarna-hero.png'
+
+function shuffledPieces() {
+  const pieces = Array.from({ length: TOTAL_TILES }, (_, i) => ({
+    id: `piece-${i}`,
+    correctIndex: i,
+  }))
+
+  for (let i = pieces.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[pieces[i], pieces[j]] = [pieces[j], pieces[i]]
   }
-  return a
+
+  return pieces
 }
 
-export default function PuzzleReveal({ game }) {
-  const [qIdx,    setQIdx]    = useState(0)
-  const [options, setOptions] = useState([])
-  const [status,  setStatus]  = useState('idle')
-  const [done,    setDone]    = useState(false)
-  const sound = useSound()
+function PieceFace({ piece }) {
+  const row = Math.floor(piece.correctIndex / COLS)
+  const col = piece.correctIndex % COLS
 
-  const allRevealed = game.tilesRevealed >= game.totalTiles
-  const current = PUZZLE_QUESTIONS[qIdx]
+  return (
+    <img
+      src={PUZZLE_IMAGE}
+      alt=""
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none select-none max-w-none"
+      style={{
+        width: `${COLS * 100}%`,
+        height: `${ROWS * 100}%`,
+        left: `-${col * 100}%`,
+        top: `-${row * 100}%`,
+      }}
+    />
+  )
+}
 
-  useEffect(() => {
-    if (current) setOptions(shuffleArray(current.options))
-    setStatus('idle')
-  }, [qIdx])
+function DraggablePiece({ piece, activeId }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: piece.id,
+  })
 
-  useEffect(() => {
-    if (allRevealed) {
-      setDone(true)
-      sound.playFanfare()
-    }
-  }, [allRevealed])
-
-  function choose(opt) {
-    if (status !== 'idle') return
-    sound.playClick()
-    if (opt.correct) {
-      setStatus('correct')
-      game.addScore('puzzleCorrect')
-      game.revealTile()
-      sound.playCorrect()
-      sound.playReveal()
-    } else {
-      setStatus('wrong')
-      sound.playWrong()
-    }
-  }
-
-  function next() {
-    sound.playClick()
-    const nextIdx = qIdx + 1
-    if (nextIdx >= PUZZLE_QUESTIONS.length || allRevealed) setDone(true)
-    else setQIdx(nextIdx)
+  const style = {
+    transform: CSS.Translate.toString(transform),
   }
 
   return (
-    <div className="h-full glass-card px-3.5 py-3 sm:px-4 sm:py-3.5 flex flex-col overflow-hidden">
-      <div className="flex items-start justify-between gap-3 mb-1 flex-wrap">
-        <div className="flex items-center gap-2">
-          <Grid2x2 size={22} className="text-teal" />
-          <h2 className="font-display text-gold text-2xl sm:text-3xl">I-reveal ang Ibong Adarna!</h2>
-        </div>
-        <div className="flex gap-1.5 sm:gap-2">
-          {[
-            { val: game.tilesRevealed, lbl: 'Na-reveal',  color: 'text-gold' },
-            { val: game.totalTiles,    lbl: 'Kabuuan',    color: 'text-white/60' },
-            { val: `${Math.round((game.tilesRevealed / game.totalTiles) * 100)}%`, lbl: 'Kumpleto', color: 'text-teal' },
-          ].map(s => (
-            <div key={s.lbl} className="glass-card px-2.5 py-1.5 sm:px-3 sm:py-2 text-center min-w-[92px] sm:min-w-[102px]">
-              <div className={`font-display text-xl sm:text-2xl leading-none ${s.color}`}>{s.val}</div>
-              <div className="text-white/60 text-[10px] sm:text-xs uppercase tracking-widest">{s.lbl}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <p className="text-white/70 text-sm sm:text-base mb-1.5">Sumagot nang tama para ma-unlock ang bawat puzzle tile.</p>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className={`relative h-full w-full rounded-xl border border-gold/30 overflow-hidden touch-none ${
+        isDragging || activeId === piece.id ? 'opacity-25' : ''
+      }`}
+    >
+      <PieceFace piece={piece} />
+    </div>
+  )
+}
 
-      <div className="grid lg:grid-cols-2 gap-2.5 items-stretch flex-1 min-h-0 pt-0">
-        <AdarnaPuzzleImage tilesRevealed={game.tilesRevealed} totalTiles={game.totalTiles} />
+function DropCell({ index, piece, activeId }) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: `slot-${index}`,
+    data: { index },
+  })
 
-      <AnimatePresence mode="wait">
-        {done ? (
-          <motion.div key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-6">
-            <div className="text-6xl mb-3 animate-float">🦜</div>
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Sparkles size={20} className="text-gold" />
-              <h3 className="font-display text-teal text-xl">Ang Ibong Adarna ay Natuklasan!</h3>
-              <Sparkles size={20} className="text-gold" />
+  return (
+    <div
+      ref={setNodeRef}
+      className={`relative aspect-square rounded-xl transition-all ${isOver ? 'ring-2 ring-teal/80' : ''}`}
+    >
+      <DraggablePiece piece={piece} activeId={activeId} />
+    </div>
+  )
+}
+
+export default function PuzzleReveal() {
+  const sound = useSound()
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
+
+  const [pieces, setPieces] = useState(() => shuffledPieces())
+  const [moves, setMoves] = useState(0)
+  const [activeId, setActiveId] = useState(null)
+
+  const solved = useMemo(
+    () => pieces.every((piece, index) => piece.correctIndex === index),
+    [pieces],
+  )
+
+  const activePiece = activeId ? pieces.find((p) => p.id === activeId) : null
+
+  function reshuffle() {
+    sound.playClick()
+    setPieces(shuffledPieces())
+    setMoves(0)
+    setActiveId(null)
+  }
+
+  function onDragStart(event) {
+    if (solved) return
+    setActiveId(event.active.id)
+  }
+
+  function onDragCancel() {
+    setActiveId(null)
+  }
+
+  function onDragEnd(event) {
+    const { active, over } = event
+    setActiveId(null)
+
+    if (!over || solved) return
+    if (typeof over.id !== 'string' || !over.id.startsWith('slot-')) return
+
+    const fromIndex = pieces.findIndex((p) => p.id === active.id)
+    const toIndex = over.data?.current?.index
+
+    if (fromIndex < 0 || toIndex == null || fromIndex === toIndex) return
+
+    setPieces((prev) => {
+      const next = [...prev]
+      ;[next[fromIndex], next[toIndex]] = [next[toIndex], next[fromIndex]]
+      const willSolve = next.every((piece, index) => piece.correctIndex === index)
+      setMoves((m) => m + 1)
+      sound.playClick()
+      if (willSolve) sound.playFanfare()
+      return next
+    })
+  }
+
+  return (
+    <div className="h-full w-full flex flex-col items-center justify-start overflow-hidden pt-1 sm:pt-2">
+      <div className="w-full h-full glass-card px-1.5 sm:px-2 py-1.5 sm:py-2">
+
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={onDragStart}
+          onDragCancel={onDragCancel}
+          onDragEnd={onDragEnd}
+        >
+          <div className="h-full min-h-0 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(250px,0.28fr)] gap-1.5">
+            <div className="order-2 lg:order-1 h-full min-h-0 flex items-center justify-center">
+              <div className="h-full max-h-[calc(100vh-78px)] aspect-square w-auto max-w-full rounded-2xl border border-gold/35 bg-deep/70 p-0.5 sm:p-1">
+                <div
+                  className="grid grid-cols-4 gap-0.5 sm:gap-1 h-full w-full"
+                >
+                  {pieces.map((piece, index) => (
+                    <DropCell key={`slot-${index}`} index={index} piece={piece} activeId={activeId} />
+                  ))}
+                </div>
+              </div>
             </div>
-            <p className="text-white/75 text-lg mb-6">Napakagaling! Lahat ng tiles ay na-reveal na!</p>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              onClick={() => { sound.playClick(); game.goTo(4) }}
-              className="btn-gold flex items-center gap-2 mx-auto">
-              Huli na - Ayusin ang Kwento <ChevronRight size={18} />
-            </motion.button>
-          </motion.div>
-        ) : (
-          <motion.div key="quiz" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full min-h-0 flex flex-col justify-center">
-            <div className="rounded-3xl border border-gold/20 bg-gold/5 p-3 mb-2">
-              <p className="text-white/60 text-base sm:text-lg uppercase tracking-widest mb-1">
-                Tanong {qIdx + 1} ng {PUZZLE_QUESTIONS.length}
+
+            <div className="order-1 lg:order-2 h-full min-h-0 flex flex-col gap-2">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Grid2x2 size={24} className="text-teal" />
+                  <h1 className="font-display text-gold text-[clamp(1.55rem,2.4vw,2.6rem)]">Ibong Adarna Puzzle</h1>
+                </div>
+                <p className="text-white/75 text-sm mt-0.5">I-drag ang mga piraso para mabuo ang larawan.</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="glass-card px-3 py-2 text-center min-w-[92px]">
+                  <div className="font-display text-xl text-teal leading-none">{moves}</div>
+                  <div className="text-white/60 text-[10px] uppercase tracking-widest">Moves</div>
+                </div>
+                <button onClick={reshuffle} className="btn-purple !px-4 !py-2 flex items-center gap-2">
+                  <RotateCcw size={16} />
+                  Shuffle
+                </button>
+              </div>
+
+              <div className="rounded-2xl border border-gold/25 bg-gold/5 p-3 text-white/80">
+                <p className="text-base font-bold text-gold mb-1">Paano Laruin</p>
+                <p className="text-sm leading-relaxed">
+                  I-drag ang isang tile at i-drop sa ibang tile para magpalit sila ng puwesto.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-gold/25 bg-gold/5 p-3">
+                <p className="text-base font-bold text-gold mb-1">Status</p>
+                <p className={`text-sm leading-relaxed ${solved ? 'text-jade' : 'text-white/80'}`}>
+                  {solved ? 'Magaling! Nabuo mo ang Ibong Adarna puzzle!' : 'Tip: Simulan sa mga gilid at kanto para mas mabilis.'}
+                </p>
+              </div>
+
+              <motion.div
+                initial={false}
+                animate={{ opacity: solved ? 1 : 0.8, y: solved ? 0 : 2 }}
+                className={`mt-auto min-h-[44px] rounded-2xl border px-3 py-1.5 text-center text-xs sm:text-sm font-bold ${
+                  solved ? 'border-jade bg-jade/10 text-jade' : 'border-gold/25 bg-gold/5 text-white/80'
+                }`}
+              >
+                {solved ? 'Kompleto na ang puzzle.' : 'Ayusin ang buong larawan para manalo.'}
+              </motion.div>
+            </div>
+          </div>
+
+          <DragOverlay>
+            {activePiece ? (
+              <div
+                className="relative rounded-xl border border-gold/40 overflow-hidden shadow-2xl shadow-gold/40"
+                style={{ width: 'clamp(90px, 19vw, 220px)', height: 'clamp(90px, 19vw, 220px)' }}
+              >
+                <PieceFace piece={activePiece} />
+              </div>
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+
+        {solved && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[60] bg-[#120322]/90 backdrop-blur-sm flex items-center justify-center px-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 14 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              className="w-full max-w-3xl glass-card border-jade/40 p-8 sm:p-10 text-center"
+            >
+              <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-jade/15 border border-jade/40 mb-5">
+                <Sparkles size={38} className="text-jade" />
+              </div>
+              <h2 className="font-display text-gold text-4xl sm:text-5xl mb-3">
+                Magaling!
+              </h2>
+              <p className="text-jade text-2xl sm:text-3xl font-bold mb-2">
+                Nabuo mo ang Ibong Adarna Puzzle!
               </p>
-              <p className="text-white font-bold text-xl sm:text-2xl">{current?.question}</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 mb-2.5">
-              {options.map((opt, i) => {
-                let cls = 'border-white/15 bg-white/5 hover:border-teal/60 hover:bg-teal/8'
-                if (status !== 'idle') {
-                  if (opt.correct) cls = 'border-jade bg-jade/15'
-                  else             cls = 'border-white/10 bg-white/3 opacity-50'
-                }
-                return (
-                  <motion.button key={i} onClick={() => choose(opt)}
-                    disabled={status !== 'idle'}
-                    whileHover={status === 'idle' ? { y: -2 } : {}}
-                    whileTap={status === 'idle'   ? { scale: 0.97 } : {}}
-                    className={`rounded-2xl border-2 px-3 py-2.5 text-lg sm:text-xl font-bold text-left
-                      transition-all duration-200 font-body text-white ${cls}`}>
-                    <span className="mr-1 text-white/40">{String.fromCharCode(65+i)}.</span>
-                    {opt.text}
-                    {status !== 'idle' && opt.correct && <CheckCircle2 size={14} className="text-jade inline ml-1" />}
-                  </motion.button>
-                )
-              })}
-            </div>
-
-            <AnimatePresence>
-              {status !== 'idle' && (
-                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                  className={`mb-2.5 flex items-center gap-2 p-2.5 rounded-2xl border text-sm sm:text-base font-bold
-                    ${status === 'correct' ? 'border-jade bg-jade/10 text-jade' : 'border-red-400 bg-red-400/10 text-red-300'}`}>
-                  {status === 'correct'
-                    ? <><CheckCircle2 size={18} /> Tama! Isang tile ang na-reveal! +{game.POINTS.puzzleCorrect} pts</>
-                    : <><XCircle size={18} /> Mali! Subukan muli sa susunod na tanong.</>}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <AnimatePresence>
-              {status !== 'idle' && (
-                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="pt-1 flex justify-center">
-                  <button onClick={next} className="btn-teal flex items-center gap-2">
-                    {qIdx + 1 >= PUZZLE_QUESTIONS.length ? 'Tapusin ang Puzzle' : 'Susunod na Tanong'}
-                    <ChevronRight size={18} />
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+              <p className="text-white/75 text-base sm:text-lg mb-7">
+                Nais mo bang ulitin ang challenge?
+              </p>
+              <button
+                onClick={reshuffle}
+                className="btn-gold !px-10 !py-3.5 text-lg flex items-center gap-2 mx-auto"
+              >
+                <RotateCcw size={18} />
+                Maglaro Muli
+              </button>
+            </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
       </div>
     </div>
   )
