@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
-import { Star, Trophy, LayoutGrid } from 'lucide-react'
+import { Star, LayoutGrid, Volume2, VolumeX } from 'lucide-react'
 
 // Section labels shown in the progress bar
 const SECTION_LABELS = ['Talasalitaan', 'Karakter', 'Puzzle', 'Kwento']
 
-export default function ScoreBar({ score, section, tilesRevealed, totalTiles }) {
+export default function ScoreBar({ score, section, tilesRevealed, totalTiles, musicOn, onToggleMusic }) {
   // section prop is 1–4 (screens 1–4), map to 0-based for dots
   const activeDot = section - 1
 
@@ -58,6 +58,17 @@ export default function ScoreBar({ score, section, tilesRevealed, totalTiles }) 
             {tilesRevealed}<span className="text-white/40 text-lg">/{totalTiles}</span>
           </div>
         </div>
+        <button
+          onClick={onToggleMusic}
+          className="ml-2 rounded-full border border-white/20 bg-white/5 p-2 hover:border-gold/50 transition-colors"
+          aria-label={musicOn ? 'Patayin ang musika' : 'Buksan ang musika'}
+          title={musicOn ? 'Music: On' : 'Music: Off'}
+        >
+          {musicOn
+            ? <Volume2 size={16} className="text-teal" />
+            : <VolumeX size={16} className="text-white/65" />
+          }
+        </button>
       </div>
     </motion.div>
   )

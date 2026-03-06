@@ -97,7 +97,7 @@ export default function PuzzleReveal({ game }) {
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => { sound.playClick(); game.goTo(4) }}
               className="btn-gold flex items-center gap-2 mx-auto">
-              Huli na — Ayusin ang Kwento <ChevronRight size={18} />
+              Huli na - Ayusin ang Kwento <ChevronRight size={18} />
             </motion.button>
           </motion.div>
         ) : (
@@ -137,8 +137,8 @@ export default function PuzzleReveal({ game }) {
                   className={`mb-3 flex items-center gap-3 p-3 rounded-2xl border text-base font-bold
                     ${status === 'correct' ? 'border-jade bg-jade/10 text-jade' : 'border-red-400 bg-red-400/10 text-red-300'}`}>
                   {status === 'correct'
-                    ? <><CheckCircle2 size={18} /> ✅ Tama! Isang tile ang na-reveal! +{game.POINTS.puzzleCorrect} pts</>
-                    : <><XCircle size={18} /> ❌ Mali! Subukan muli sa susunod na tanong.</>}
+                    ? <><CheckCircle2 size={18} /> Tama! Isang tile ang na-reveal! +{game.POINTS.puzzleCorrect} pts</>
+                    : <><XCircle size={18} /> Mali! Subukan muli sa susunod na tanong.</>}
                 </motion.div>
               )}
             </AnimatePresence>

@@ -163,7 +163,7 @@ export default function StoryOrder({ game }) {
         <GripVertical size={16} className="text-gold flex-shrink-0 mt-0.5" />
         <p className="text-white/80 text-base leading-relaxed">
           <span className="text-gold font-bold">Tip:</span>{' '}
-          Hawakan ang <span className="text-gold">⠿ grip icon</span> sa kaliwa ng bawat kahon,
+          Hawakan ang <span className="text-gold">grip icon</span> sa kaliwa ng bawat kahon,
           tapos i-drag papunta sa tamang posisyon.
         </p>
       </div>
@@ -206,8 +206,8 @@ export default function StoryOrder({ game }) {
             <div>
               <p className="font-bold text-lg">
                 {allOk
-                  ? '🎉 Tama! Perpektong pagkakasunud-sunod! Papunta na sa Final Screen…'
-                  : '❌ Hindi pa tama. Ang mga pulang kahon ay nasa maling posisyon. Subukan muli!'
+                  ? 'Tama! Perpektong pagkakasunud-sunod! Papunta na sa Final Screen...'
+                  : 'Hindi pa tama. Ang mga pulang kahon ay nasa maling posisyon. Subukan muli!'
                 }
               </p>
               {!allOk && (

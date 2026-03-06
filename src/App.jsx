@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useGame }       from './hooks/useGame'
 import ScoreBar          from './components/ScoreBar'
@@ -38,6 +38,14 @@ export default function App() {
   const starsRef       = useRef(null)
   const ActiveScreen   = SCREENS[game.screen]
   const sound          = useSound()
+  const [musicOn, setMusicOn] = useState(() => {
+    try {
+      const saved = window.localStorage.getItem('adarna_music_on')
+      return saved === null ? true : saved === '1'
+    } catch {
+      return true
+    }
+  })
 
   // ── Generate starfield once on mount ──────────────────
   useEffect(() => {
@@ -61,15 +69,28 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    sound.startBgm()
-    const unlock = () => sound.startBgm()
+    if (musicOn) sound.startBgm()
+    const unlock = () => {
+      if (musicOn) sound.startBgm()
+    }
     window.addEventListener('pointerdown', unlock, { once: true })
     window.addEventListener('keydown', unlock, { once: true })
     return () => {
       window.removeEventListener('pointerdown', unlock)
       window.removeEventListener('keydown', unlock)
+      sound.stopBgm()
     }
   }, [])
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('adarna_music_on', musicOn ? '1' : '0')
+    } catch {
+      // ignore storage errors
+    }
+    if (musicOn) sound.startBgm()
+    else sound.stopBgm()
+  }, [musicOn])
 
   return (
     <div className="relative h-screen overflow-hidden">
@@ -83,7 +104,6 @@ export default function App() {
 
       {/* ── App content ── */}
       <div className="relative z-10 h-full w-full max-w-[min(99vw,1920px)] mx-auto px-3 sm:px-5 lg:px-8 py-2 sm:py-3 flex flex-col">
-
         {/* Score bar — hidden on home & final */}
         {game.screen > 0 && game.screen < 5 && (
           <ScoreBar
@@ -91,6 +111,11 @@ export default function App() {
             section={game.screen}
             tilesRevealed={game.tilesRevealed}
             totalTiles={game.totalTiles}
+            musicOn={musicOn}
+            onToggleMusic={() => {
+              sound.playClick()
+              setMusicOn(v => !v)
+            }}
           />
         )}
 

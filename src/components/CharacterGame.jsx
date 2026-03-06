@@ -134,8 +134,8 @@ export default function CharacterGame({ game }) {
                   size="100%"
                   className="w-full h-full rounded-[22px]"
                 />
-                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/65 to-transparent pointer-events-none" />
-                <span className="absolute bottom-2 left-2 right-2 text-white font-bold text-xl sm:text-2xl text-center leading-tight">
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/85 via-black/50 to-transparent pointer-events-none" />
+                <span className="absolute bottom-2 left-2 right-2 text-white font-bold text-xl sm:text-2xl text-center leading-tight [text-shadow:0_2px_12px_rgba(0,0,0,0.95)]">
                   {opt.name}
                 </span>
                   {status !== 'idle' && isCorrect && (
@@ -168,7 +168,7 @@ export default function CharacterGame({ game }) {
               })()}
               <div>
                 <p className="font-bold text-lg mb-1">
-                  {status === 'correct' ? `✅ Tama! Si ${current.name}!` : `❌ Mali. Ang tamang sagot ay si ${current.name}.`}
+                  {status === 'correct' ? `Tama! Si ${current.name}!` : `Mali. Ang tamang sagot ay si ${current.name}.`}
                 </p>
                 <p className="text-white/80 text-sm sm:text-base leading-relaxed">{current.description}</p>
               </div>

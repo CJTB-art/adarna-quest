@@ -90,7 +90,7 @@ export default function FinalScreen({ game }) {
         transition={{ delay: 0.4 }}
         className="text-white/60 italic text-base sm:text-lg tracking-widest"
       >
-        — Adarna Quest Complete —
+        - Adarna Quest Complete -
       </motion.p>
 
       {/* Score card */}
@@ -179,7 +179,7 @@ export default function FinalScreen({ game }) {
         className="text-center text-white/45 text-base italic max-w-4xl leading-relaxed"
       >
         "Ang Ibong Adarna ay simbolo ng tagumpay, pag-asa, at pagmamahal sa pamilya."
-        <br />— Huwag kalimutan ang aral ng kwento!
+        <br />- Huwag kalimutan ang aral ng kwento!
       </motion.div>
 
       {/* Restart */}

@@ -1,11 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap');
+
 /* ── Tailwind Base Directives ─────────────────────────── */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ── Google Fonts import fallback ──────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap');
-
 /* ── Global Base ───────────────────────────────────────── */
 @layer base {
   * {
@@ -155,3 +155,5 @@
   .prog-dot-active  { @apply bg-gold border-gold shadow-gold; }
   .prog-dot-pending { @apply bg-transparent border-white/30; }
 }
+
+

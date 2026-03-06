@@ -197,12 +197,12 @@ export default function VocabGame({ game }) {
               <div>
                 <p className="font-bold text-lg">
                   {status === 'correct'
-                    ? `✅ Tama! Ang salita ay "${current.word}"`
-                    : `❌ Mali. Ang tamang sagot ay: ${current.word}`
+                    ? `Tama! Ang salita ay "${current.word}"`
+                    : `Mali. Ang tamang sagot ay: ${current.word}`
                   }
                 </p>
                 <p className="text-white/90 text-xl leading-relaxed mt-2">
-                  <span className="text-gold font-semibold">📖 Kahulugan:</span>{' '}
+                  <span className="text-gold font-semibold">Kahulugan:</span>{' '}
                   {current.meaning}
                 </p>
               </div>
