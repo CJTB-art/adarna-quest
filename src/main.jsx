@@ -6,6 +6,9 @@ import './index.css'
 
 registerSW({
   immediate: true,
+  onOfflineReady() {
+    window.dispatchEvent(new CustomEvent('adarna-offline-ready'))
+  },
 })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
