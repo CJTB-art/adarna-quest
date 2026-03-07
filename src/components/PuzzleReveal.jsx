@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   DndContext,
@@ -200,23 +200,20 @@ function TileDropCell({ index, piece, activeId }) {
 
 function StoryCardFace({ card }) {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[0.7rem] border border-white/8 bg-black/10">
-      <div className="relative h-full w-full overflow-hidden bg-black/10">
+    <div className="relative h-full w-full overflow-hidden rounded-[0.35rem] bg-black">
+      <div className="relative h-full w-full overflow-hidden bg-black">
         <img
           src={card.image}
           alt={card.description}
           className="absolute inset-0 h-full w-full object-contain p-0"
           draggable="false"
         />
-        <div className="absolute left-2 top-2 flex h-8 min-w-8 items-center justify-center rounded-full border border-[#f2c94c]/35 bg-[#150b21]/55 px-2 font-display text-sm text-[#f2c94c] sm:left-3 sm:top-3 sm:h-9 sm:min-w-9 sm:text-base">
-          {card.correctIndex + 1}
-        </div>
       </div>
     </div>
   );
 }
 
-function DraggableStoryCard({ card, activeId }) {
+function DraggableStoryCard({ card, activeId, onPreview }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: card.id,
@@ -232,6 +229,9 @@ function DraggableStoryCard({ card, activeId }) {
       style={style}
       {...listeners}
       {...attributes}
+      onClick={() => {
+        if (!isDragging) onPreview(card);
+      }}
       className={`relative h-full w-full touch-none outline-none ${
         isDragging || activeId === card.id ? "opacity-25" : ""
       }`}
@@ -241,7 +241,7 @@ function DraggableStoryCard({ card, activeId }) {
   );
 }
 
-function StoryDropSlot({ index, card, activeId }) {
+function StoryDropSlot({ index, card, activeId, onPreview }) {
   const { setNodeRef, isOver } = useDroppable({
     id: `part2-slot-${index}`,
     data: { index },
@@ -250,18 +250,15 @@ function StoryDropSlot({ index, card, activeId }) {
   return (
     <div
       ref={setNodeRef}
-      className={`relative aspect-[4/2.75] min-h-0 transition-transform ${
+      className={`relative h-full min-h-0 transition-transform ${
         isOver ? "scale-[1.02]" : ""
       }`}
     >
-      <div
-        className={`absolute inset-0 rounded-[0.75rem] ${
-          isOver
-            ? "ring-2 ring-[#7be0d6]/75 ring-offset-1 ring-offset-[#0c0516]"
-            : ""
-        }`}
+      <DraggableStoryCard
+        card={card}
+        activeId={activeId}
+        onPreview={onPreview}
       />
-      <DraggableStoryCard card={card} activeId={activeId} />
     </div>
   );
 }
@@ -494,6 +491,7 @@ function PartTwoPuzzle() {
 
   const [cards, setCards] = useState(() => shuffleCards());
   const [activeId, setActiveId] = useState(null);
+  const [previewCard, setPreviewCard] = useState(null);
 
   const solved = useMemo(
     () =>
@@ -507,10 +505,22 @@ function PartTwoPuzzle() {
     ? cards.find((card) => card.id === activeId)
     : null;
 
+  useEffect(() => {
+    if (!previewCard) return;
+
+    function onKeyDown(event) {
+      if (event.key === "Escape") setPreviewCard(null);
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [previewCard]);
+
   function reshuffle() {
     sound.playClick();
     setCards(shuffleCards());
     setActiveId(null);
+    setPreviewCard(null);
   }
 
   function onDragStart(event) {
@@ -556,20 +566,21 @@ function PartTwoPuzzle() {
         onDragCancel={onDragCancel}
         onDragEnd={onDragEnd}
       >
-        <div className="grid h-full min-h-0 auto-rows-fr grid-cols-1 gap-[1px] p-[1px] sm:grid-cols-2 sm:gap-[2px] sm:p-[2px] xl:grid-cols-4">
+        <div className="grid h-full min-h-0 grid-cols-1 gap-0 p-0 sm:grid-cols-2 xl:grid-cols-4 xl:grid-rows-3">
           {cards.map((card, index) => (
             <StoryDropSlot
               key={`part2-slot-${index}`}
               index={index}
               card={card}
               activeId={activeId}
+              onPreview={setPreviewCard}
             />
           ))}
         </div>
 
         <DragOverlay>
           {activeCard ? (
-            <div className="aspect-[4/2.75] w-[min(28vw,380px)] min-w-[240px] overflow-hidden rounded-[0.8rem] border border-white/10 shadow-2xl shadow-black/50">
+            <div className="aspect-[4/3] w-[min(28vw,380px)] min-w-[240px] overflow-hidden rounded-[0.8rem] border border-white/10 shadow-2xl shadow-black/50">
               <StoryCardFace
                 card={activeCard}
               />
@@ -616,6 +627,41 @@ function PartTwoPuzzle() {
             </button>
           </motion.div>
         </motion.div>
+      )}
+
+      {previewCard && (
+        <motion.button
+          type="button"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => setPreviewCard(null)}
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/78 px-4 backdrop-blur-sm"
+        >
+          <motion.div
+            initial={{ scale: 0.94, opacity: 0, y: 10 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            onClick={(event) => event.stopPropagation()}
+            className="w-full max-w-6xl overflow-hidden rounded-[1.25rem] border border-white/10 bg-black shadow-2xl shadow-black/60"
+          >
+            <div className="relative min-h-[min(82vh,880px)] bg-black">
+              <img
+                src={previewCard.image}
+                alt={previewCard.description}
+                className="absolute inset-0 h-full w-full object-contain p-3 sm:p-4"
+                draggable="false"
+              />
+              <div className="absolute right-4 top-4">
+                <button
+                  type="button"
+                  onClick={() => setPreviewCard(null)}
+                  className="btn-gold !px-5 !py-2.5 text-sm sm:text-base"
+                >
+                  Isara
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.button>
       )}
     </div>
   );
