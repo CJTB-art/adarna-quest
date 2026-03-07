@@ -200,7 +200,7 @@ function TileDropCell({ index, piece, activeId }) {
 
 function StoryCardFace({ card }) {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[0.35rem] bg-black">
+    <div className="relative h-full w-full overflow-hidden rounded-[0.35rem] border border-[rgba(242,201,76,0.22)] bg-black">
       <div className="relative h-full w-full overflow-hidden bg-black">
         <img
           src={card.image}
@@ -254,6 +254,11 @@ function StoryDropSlot({ index, card, activeId, onPreview }) {
         isOver ? "scale-[1.02]" : ""
       }`}
     >
+      <div
+        className={`absolute inset-0 rounded-[0.35rem] ${
+          isOver ? "border border-[rgba(242,201,76,0.4)]" : ""
+        }`}
+      />
       <DraggableStoryCard
         card={card}
         activeId={activeId}
