@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MonitorUp, MonitorDown } from 'lucide-react'
 import PuzzleReveal      from './components/PuzzleReveal'
 import { useSound }      from './hooks/useSound'
 
@@ -22,14 +21,6 @@ export default function App() {
       return true
     }
   })
-  const [classroomMode, setClassroomMode] = useState(() => {
-    try {
-      return window.localStorage.getItem('adarna_classroom_mode') === '1'
-    } catch {
-      return false
-    }
-  })
-
   // ── Generate starfield once on mount ──────────────────
   useEffect(() => {
     const bg = starsRef.current
@@ -76,18 +67,11 @@ export default function App() {
   }, [musicOn])
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem('adarna_classroom_mode', classroomMode ? '1' : '0')
-    } catch {
-      // ignore storage errors
-    }
-
     const root = document.documentElement
-    if (classroomMode) root.classList.add('classroom-mode')
-    else root.classList.remove('classroom-mode')
+    root.classList.add('classroom-mode')
 
     return () => root.classList.remove('classroom-mode')
-  }, [classroomMode])
+  }, [])
 
   return (
     <div className="relative h-screen overflow-hidden">
@@ -101,19 +85,6 @@ export default function App() {
 
       {/* ── App content ── */}
       <div className="relative z-10 h-full w-full max-w-[99.6vw] mx-auto px-1 sm:px-2 py-1 sm:py-1.5 flex flex-col">
-        <button
-          type="button"
-          onClick={() => {
-            sound.playClick()
-            setClassroomMode(v => !v)
-          }}
-          className="absolute right-3 top-3 z-20 rounded-full border border-gold/40 bg-deep/70 px-3 py-1.5 text-xs sm:text-sm text-gold flex items-center gap-1.5 hover:border-gold/70 transition-colors"
-          title={classroomMode ? 'Patayin ang classroom view' : 'Buksan ang classroom view'}
-        >
-          {classroomMode ? <MonitorDown size={14} /> : <MonitorUp size={14} />}
-          {classroomMode ? 'Classroom On' : 'Classroom Off'}
-        </button>
-
         {/* Animated screen transitions */}
         <div className="flex-1 min-h-0">
           <AnimatePresence mode="wait">
