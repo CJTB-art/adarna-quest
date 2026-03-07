@@ -13,6 +13,7 @@ const pageVariants = {
 export default function App() {
   const starsRef       = useRef(null)
   const sound          = useSound()
+  const [offlineReady, setOfflineReady] = useState(false)
   const [musicOn, setMusicOn] = useState(() => {
     try {
       const saved = window.localStorage.getItem('adarna_music_on')
@@ -73,6 +74,23 @@ export default function App() {
     return () => root.classList.remove('classroom-mode')
   }, [])
 
+  useEffect(() => {
+    let timeoutId
+
+    function handleOfflineReady() {
+      setOfflineReady(true)
+      timeoutId = window.setTimeout(() => {
+        setOfflineReady(false)
+      }, 4000)
+    }
+
+    window.addEventListener('adarna-offline-ready', handleOfflineReady)
+    return () => {
+      window.removeEventListener('adarna-offline-ready', handleOfflineReady)
+      window.clearTimeout(timeoutId)
+    }
+  }, [])
+
   return (
     <div className="relative h-screen overflow-hidden">
 
@@ -100,6 +118,19 @@ export default function App() {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        <AnimatePresence>
+          {offlineReady && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              className="pointer-events-none absolute bottom-4 right-4 z-30 rounded-2xl border border-jade/35 bg-[#0b1220]/88 px-4 py-3 text-sm text-white shadow-xl shadow-black/35 backdrop-blur-md"
+            >
+              Available offline.
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
