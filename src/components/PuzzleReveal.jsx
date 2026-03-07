@@ -442,8 +442,9 @@ function PartOnePuzzle({ onNext }) {
                   Paano Laruin
                 </p>
                 <p className="text-sm leading-relaxed">
-                  I-drag ang isang tile at i-drop sa ibang tile para magpalit
-                  sila ng puwesto.
+                  Igalaw (drag) ang isang piraso ng larawan at ilipat (drop)
+                  ito sa ibabaw ng ibang piraso upang sila ay magpalitan ng
+                  puwesto.
                 </p>
               </div>
 
@@ -454,7 +455,7 @@ function PartOnePuzzle({ onNext }) {
                 >
                   {solved
                     ? "Magaling! Nabuo nyo ang Ibong Adarna puzzle!"
-                    : "Tip: Simulan sa mga gilid at kanto para mas mabilis."}
+                    : "Payo: Simulan ang pag-aayos sa mga gilid at sulok ng larawan upang higit na mapadali at mapabilis ang pagbuo nito."}
                 </p>
               </div>
 
@@ -469,7 +470,7 @@ function PartOnePuzzle({ onNext }) {
               >
                 {solved
                   ? "Kompleto na ang puzzle."
-                  : "Ayusin ang buong larawan para manalo."}
+                  : "Ayusin nang wasto ang buong larawan upang magtagumpay."}
               </motion.div>
             </div>
           </div>
