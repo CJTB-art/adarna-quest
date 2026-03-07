@@ -108,6 +108,20 @@ const STORY_CARDS = [
 
 const PART_TWO_SLOT_ORDER = [0, 1, 2, 3, 7, 6, 5, 4, 8, 9, 10, 11];
 
+const PART_TWO_GUIDE_ARROWS = [
+  { left: "25%", top: "16.67%", direction: "right" },
+  { left: "50%", top: "16.67%", direction: "right" },
+  { left: "75%", top: "16.67%", direction: "right" },
+  { left: "87.5%", top: "33.33%", direction: "down" },
+  { left: "75%", top: "50%", direction: "left" },
+  { left: "50%", top: "50%", direction: "left" },
+  { left: "25%", top: "50%", direction: "left" },
+  { left: "12.5%", top: "66.67%", direction: "down" },
+  { left: "25%", top: "83.33%", direction: "right" },
+  { left: "50%", top: "83.33%", direction: "right" },
+  { left: "75%", top: "83.33%", direction: "right" },
+];
+
 function shuffledPieces() {
   const pieces = Array.from({ length: TOTAL_TILES }, (_, i) => ({
     id: `piece-${i}`,
@@ -264,6 +278,39 @@ function StoryDropSlot({ index, card, activeId, onPreview }) {
         activeId={activeId}
         onPreview={onPreview}
       />
+    </div>
+  );
+}
+
+function SequenceGuideArrow({ left, top, direction }) {
+  const rotation =
+    direction === "right"
+      ? "0deg"
+      : direction === "down"
+        ? "90deg"
+        : "180deg";
+
+  return (
+    <div
+      className="absolute z-10 hidden -translate-x-1/2 -translate-y-1/2 pointer-events-none xl:block"
+      style={{ left, top }}
+      aria-hidden="true"
+    >
+      <svg
+        width="52"
+        height="52"
+        viewBox="0 0 52 52"
+        className="drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
+        style={{ transform: `rotate(${rotation})` }}
+      >
+        <path
+          d="M6 20H26V12L46 26L26 40V32H6Z"
+          fill="#f2c94c"
+          stroke="#5a3a00"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+      </svg>
     </div>
   );
 }
@@ -582,6 +629,14 @@ function PartTwoPuzzle() {
             />
           ))}
         </div>
+        {PART_TWO_GUIDE_ARROWS.map((arrow, index) => (
+          <SequenceGuideArrow
+            key={`guide-arrow-${index}`}
+            left={arrow.left}
+            top={arrow.top}
+            direction={arrow.direction}
+          />
+        ))}
 
         <DragOverlay>
           {activeCard ? (
